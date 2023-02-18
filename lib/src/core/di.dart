@@ -7,7 +7,9 @@ import 'package:news_app/src/features/news_main/data/datasources/news_main_remot
 import 'package:news_app/src/features/news_main/data/repositories/news_main_repository_impl.dart';
 import 'package:news_app/src/features/news_main/domain/repositories/news_main_repository.dart';
 import 'package:news_app/src/features/news_main/domain/usecases/get_categorized_news_usecase.dart';
+import 'package:news_app/src/features/news_main/domain/usecases/search_categorized_news_usecase.dart';
 import 'package:news_app/src/features/news_main/presentation/bloc/get_categorized_news_bloc.dart';
+import 'package:news_app/src/features/news_main/presentation/bloc/search_categorized_news_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final locator = GetIt.I;
@@ -33,7 +35,10 @@ void init({required SharedPreferences prefs}) async {
   // usecases
   locator.registerLazySingleton<GetCategorizedNewsUsecase>(
       () => GetCategorizedNewsUsecase(repository: locator()));
+  locator.registerLazySingleton<SearchCategorizedNewsUsecase>(
+      () => SearchCategorizedNewsUsecase(repository: locator()));
 
   // bloc
   locator.registerFactory(() => GetCategorizedNewsBloc(locator()));
+  locator.registerFactory(() => SearchCategorizedNewsBloc(locator()));
 }

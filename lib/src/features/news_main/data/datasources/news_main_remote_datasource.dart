@@ -9,7 +9,8 @@ import 'package:news_app/src/features/news_main/data/models/news_models.dart';
 import 'package:http/http.dart' as http;
 
 abstract class NewsMainRemoteDatasource {
-  TaskEither<Failure, NewsResponseModel> getCategorizedNews(String category);
+  TaskEither<Failure, NewsResponseModel> getCategorizedNews(String category,
+      {String? query});
 }
 
 class NewsMainRemoteDatasourceImpl implements NewsMainRemoteDatasource {
@@ -21,9 +22,11 @@ class NewsMainRemoteDatasourceImpl implements NewsMainRemoteDatasource {
       {required this.client, required this.apiUris, required this.logger});
 
   @override
-  TaskEither<Failure, NewsResponseModel> getCategorizedNews(String category) =>
+  TaskEither<Failure, NewsResponseModel> getCategorizedNews(String category,
+          {String? query}) =>
       TaskEither<Failure, http.Response>.tryCatch(
-        () async => await http.get(apiUris.categorizedNewsUri(category),
+        () async => await http.get(
+            apiUris.categorizedNewsUri(category, query: query),
             headers: apiUris.headers()),
         (error, stackTrace) {
           logger.e(errorToString(error), [error, stackTrace]);

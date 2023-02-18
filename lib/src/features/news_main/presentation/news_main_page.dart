@@ -29,25 +29,23 @@ class NewsMainPage extends StatelessWidget {
                   ((size.height - kToolbarHeight - 56.0) / categories.length),
               child: Card(
                 color: antiqueWhite,
-                child: ListTile(
-                  onTap: () {
-                    if (index != 0) {
+                child: Center(
+                  child: ListTile(
+                    onTap: () {
                       context.goNamed(RouteNames.categorizedNewsRoute,
-                          extra: category);
-                      return;
-                    }
-                    context.goNamed(RouteNames.allNewsRoute);
-                  },
-                  title: Text(
-                    '${category[0].toUpperCase()}${category.substring(1)}',
-                    style: theme.textTheme.bodyLarge!.copyWith(
-                      color: darkMagenta,
-                      fontWeight: FontWeight.bold,
+                          params: {'category': category});
+                    },
+                    title: Text(
+                      '${category[0].toUpperCase()}${category.substring(1)}',
+                      style: theme.textTheme.bodyLarge!.copyWith(
+                        color: darkMagenta,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  trailing: Icon(
-                    icon,
-                    color: cardinalRed,
+                    trailing: Icon(
+                      icon,
+                      color: cardinalRed,
+                    ),
                   ),
                 ),
               ),

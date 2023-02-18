@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:news_app/src/core/router.dart';
 import 'package:news_app/src/features/news_main/presentation/bloc/get_categorized_news_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class CategorizedNewsPage extends StatefulWidget {
   const CategorizedNewsPage({super.key, required this.category});
@@ -52,7 +54,12 @@ class _CategorizedNewsPageState extends State<CategorizedNewsPage> {
               final article = state.data!.articles[index];
               return Card(
                 child: ListTile(
-                  onTap: () {},
+                  onTap: () => context.goNamed(RouteNames.detailNewsRoute,
+                      extra: article,
+                      params: {
+                        'category': widget.category,
+                        'title': article.title,
+                      }),
                   title: Text(article.title),
                   subtitle: Text(
                       'Author: ${article.author}, Source: ${article.source.name}'),
@@ -61,6 +68,11 @@ class _CategorizedNewsPageState extends State<CategorizedNewsPage> {
             },
           );
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => context.goNamed(RouteNames.searchNewsRoute,
+            params: {'category': widget.category}),
+        child: const Icon(Icons.search_outlined),
       ),
     );
   }

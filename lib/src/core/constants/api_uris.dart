@@ -9,10 +9,19 @@ class ApiUris {
         'Authorization': 'Bearer ${env.apiKey}',
       };
 
-  Uri categorizedNewsUri(String category) => Uri(
-        scheme: 'https',
-        host: env.baseUrl,
-        path: env.topHeadlinesEndpoint,
-        queryParameters: {'country': 'id', 'category': category},
-      );
+  Uri categorizedNewsUri(String category, {String? query}) {
+    Map<String, String> queryParameters = {
+      'country': 'id',
+      'category': category,
+    };
+    if (query != null) {
+      queryParameters['query'] = query;
+    }
+    return Uri(
+      scheme: 'https',
+      host: env.baseUrl,
+      path: env.topHeadlinesEndpoint,
+      queryParameters: queryParameters,
+    );
+  }
 }

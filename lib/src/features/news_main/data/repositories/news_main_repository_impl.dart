@@ -13,8 +13,9 @@ class NewsMainRepositoryImpl implements NewsMainRepository {
       {required this.remoteDatasource, required this.logger});
 
   @override
-  TaskEither<Failure, NewsResponseEntity> getCategorizedNews(String category) =>
-      remoteDatasource.getCategorizedNews(category).chainEither(
+  TaskEither<Failure, NewsResponseEntity> getCategorizedNews(String category,
+          {String? query}) =>
+      remoteDatasource.getCategorizedNews(category, query: query).chainEither(
             (r) => Either.tryCatch(
               () => r.toEntity(),
               (error, stackTrace) {

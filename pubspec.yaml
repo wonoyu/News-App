@@ -25,6 +25,7 @@ dependencies:
   envied: ^0.3.0
   flutter_svg: ^1.1.6
   fpdart: ^0.4.0
+  rxdart: ^0.27.7
 
 dev_dependencies:
   flutter_test:
