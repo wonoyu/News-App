@@ -16,3 +16,12 @@ class SearchCategorizedNews extends SearchCategorizedNewsEvent {
   @override
   List<Object> get props => [category, query];
 }
+
+class SortSearchedNews extends SearchCategorizedNewsEvent {
+  const SortSearchedNews(this.isLatest);
+
+  final bool isLatest;
+
+  @override
+  List<Object> get props => [isLatest];
+}

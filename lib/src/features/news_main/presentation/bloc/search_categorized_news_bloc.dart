@@ -15,34 +15,84 @@ class SearchCategorizedNewsBloc
 
   SearchCategorizedNewsBloc(this.usecase)
       : super(const SearchCategorizedNewsState()) {
-    on<SearchCategorizedNews>((event, emit) async {
-      emit(
-        state.copyWith(
-          status: () => CategorizedNewsState.loading,
-          message: () => 'Loading',
-        ),
-      );
-
-      final category = event.category;
-      final query = event.query;
-      final result = await usecase.execute(category, query);
-
-      result.match(
-        (failure) => emit(
+    on<SearchCategorizedNews>(
+      (event, emit) async {
+        emit(
           state.copyWith(
-            status: () => CategorizedNewsState.error,
-            message: () => errorToString(failure),
+            status: () => CategorizedNewsState.loading,
+            message: () => 'Loading',
           ),
-        ),
-        (data) => emit(
+        );
+
+        final category = event.category;
+        final query = event.query;
+        final result = await usecase.execute(category, query);
+
+        result.match(
+          (failure) => emit(
+            state.copyWith(
+              status: () => CategorizedNewsState.error,
+              message: () => errorToString(failure),
+            ),
+          ),
+          (data) => emit(
+            state.copyWith(
+              status: () => CategorizedNewsState.loaded,
+              message: () => 'Loaded',
+              data: () => data,
+            ),
+          ),
+        );
+      },
+      transformer: debounce(const Duration(milliseconds: 500)),
+    );
+
+    on<SortSearchedNews>(
+      (event, emit) {
+        emit(
+          state.copyWith(
+            status: () => CategorizedNewsState.loading,
+            message: () => 'Loading',
+          ),
+        );
+
+        final currentData = state.data;
+
+        if (currentData == null) {
+          emit(
+            state.copyWith(
+              status: () => CategorizedNewsState.loaded,
+              data: () => state.data,
+              message: () => 'Loaded',
+            ),
+          );
+          return;
+        }
+
+        if (!event.isLatest) {
+          currentData.articles
+              .sort((a, b) => a.publishedAt.compareTo(b.publishedAt));
+          emit(
+            state.copyWith(
+              status: () => CategorizedNewsState.loaded,
+              data: () => currentData,
+              message: () => 'Loaded',
+            ),
+          );
+          return;
+        }
+
+        currentData.articles
+            .sort((a, b) => b.publishedAt.compareTo(a.publishedAt));
+        emit(
           state.copyWith(
             status: () => CategorizedNewsState.loaded,
+            data: () => currentData,
             message: () => 'Loaded',
-            data: () => data,
           ),
-        ),
-      );
-    }, transformer: debounce(const Duration(milliseconds: 500)));
+        );
+      },
+    );
   }
 }
 

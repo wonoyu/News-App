@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:news_app/src/core/router.dart';
 import 'package:news_app/src/features/news_main/presentation/bloc/get_categorized_news_bloc.dart';
 import 'package:news_app/src/features/news_main/presentation/bloc/search_categorized_news_bloc.dart';
@@ -23,6 +24,33 @@ class _SearchCategorizedNewsPageState extends State<SearchCategorizedNewsPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Search Categorized News'),
+        actions: [
+          PopupMenuButton(
+            itemBuilder: (context) {
+              return [
+                const PopupMenuItem<String>(
+                  value: 'latest',
+                  child: Text('Latest'),
+                ),
+                const PopupMenuItem<String>(
+                  value: 'earliest',
+                  child: Text('Earliest'),
+                ),
+              ];
+            },
+            onSelected: (value) {
+              if (value == 'latest') {
+                context
+                    .read<SearchCategorizedNewsBloc>()
+                    .add(const SortSearchedNews(true));
+                return;
+              }
+              context
+                  .read<SearchCategorizedNewsBloc>()
+                  .add(const SortSearchedNews(false));
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
@@ -71,8 +99,20 @@ class _SearchCategorizedNewsPageState extends State<SearchCategorizedNewsPage> {
                                 'title': article.title,
                               }),
                           title: Text(article.title),
-                          subtitle: Text(
-                              'Author: ${article.author}, Source: ${article.source.name}'),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                  'Author: ${article.author}, Source: ${article.source.name}'),
+                              Text(
+                                DateFormat('EEEE, dd MMMM yyyy, HH:mm', 'id_ID')
+                                    .format(article.publishedAt.toLocal()),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
+                              )
+                            ],
+                          ),
                         ),
                       );
                     },
