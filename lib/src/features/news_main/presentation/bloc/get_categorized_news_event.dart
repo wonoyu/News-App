@@ -15,3 +15,12 @@ class GetCategorizedNews extends GetCategorizedNewsEvent {
   @override
   List<Object> get props => [category];
 }
+
+class SortCategorizedNews extends GetCategorizedNewsEvent {
+  const SortCategorizedNews(this.isLatest);
+
+  final bool isLatest;
+
+  @override
+  List<Object> get props => [isLatest];
+}

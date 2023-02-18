@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:news_app/src/core/router.dart';
 import 'package:news_app/src/features/news_main/presentation/bloc/get_categorized_news_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -28,6 +29,33 @@ class _CategorizedNewsPageState extends State<CategorizedNewsPage> {
       appBar: AppBar(
         title: Text(
             '${widget.category[0].toUpperCase()}${widget.category.substring(1)} News'),
+        actions: [
+          PopupMenuButton(
+            itemBuilder: (context) {
+              return [
+                const PopupMenuItem<String>(
+                  value: 'latest',
+                  child: Text('Latest'),
+                ),
+                const PopupMenuItem<String>(
+                  value: 'earliest',
+                  child: Text('Earliest'),
+                ),
+              ];
+            },
+            onSelected: (value) {
+              if (value == 'latest') {
+                context
+                    .read<GetCategorizedNewsBloc>()
+                    .add(const SortCategorizedNews(true));
+                return;
+              }
+              context
+                  .read<GetCategorizedNewsBloc>()
+                  .add(const SortCategorizedNews(false));
+            },
+          ),
+        ],
       ),
       body: BlocBuilder<GetCategorizedNewsBloc, GetCategorizedNewsState>(
         builder: (context, state) {
@@ -61,8 +89,19 @@ class _CategorizedNewsPageState extends State<CategorizedNewsPage> {
                         'title': article.title,
                       }),
                   title: Text(article.title),
-                  subtitle: Text(
-                      'Author: ${article.author}, Source: ${article.source.name}'),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                          'Author: ${article.author}, Source: ${article.source.name}'),
+                      Text(
+                        DateFormat('EEEE, dd MMMM yyyy, HH:mm', 'id_ID')
+                            .format(article.publishedAt.toLocal()),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      )
+                    ],
+                  ),
                 ),
               );
             },
